@@ -1,8 +1,5 @@
 import MeCab
-import warnings
 from pykakasi import kakasi
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def tokenize_japanese_text(text):
@@ -12,18 +9,13 @@ def tokenize_japanese_text(text):
     tokens = []
     for line in lines[:-2]:
         surface, feature = line.split("\t")
+        feature = feature
         tokens.append(surface)
     return tokens
 
 
 def get_japanese_pronunciation(text):
-    kakasi_inst = kakasi()
-    kakasi_inst.setMode("H", "a")
-    kakasi_inst.setMode("K", "a")
-    kakasi_inst.setMode("J", "a")
-    kakasi_inst.setMode("r", "Hepburn")
-    conv = kakasi_inst.convert
-    return conv(text).pop()["hira"]
+    return kakasi().convert(text).pop()["hira"]
 
 
 from jinja2 import Template
