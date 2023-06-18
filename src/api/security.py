@@ -2,9 +2,10 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Optional
 
-from config import Config
-from fastapi import Request, Response
 import jwt
+from fastapi import Request, Response
+
+from config import Config
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

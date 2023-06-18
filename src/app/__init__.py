@@ -1,17 +1,9 @@
-from fastapi import FastAPI, Request, Depends, Form, Response, status
-from fastapi.security import OAuth2PasswordBearer
-
-import jwt
-from datetime import datetime, timedelta
-from typing import Optional
-from functools import wraps
-
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, Form, Request, Response, status
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from api.security import jwt_token_required, create_access_token
-
-from dotenv import load_dotenv
+from api.security import create_access_token, jwt_token_required
 
 load_dotenv(".env")
 
