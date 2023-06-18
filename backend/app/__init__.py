@@ -1,9 +1,12 @@
 import time
 from functools import lru_cache
+
+from fastapi.responses import JSONResponse
 from parser.subtitle import parse_subtitle_text
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, Request, Response, UploadFile, status
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
@@ -15,6 +18,13 @@ load_dotenv(".env")
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -69,8 +79,24 @@ async def process_file(file: UploadFile = File(...)):
     return {"processed_content": response}
 
 
+# @app.options("/api/v1/subtitle/process/text")
+# async def process_text_options():
+#     response_headers = {
+#         "Access-Control-Allow-Origin": "*",
+#         "Access-Control-Allow-Methods": "POST",
+#         "Access-Control-Allow-Headers": "Content-Type, Authorization",
+#         "Access-Control-Allow-Credentials": "true",
+#     }
+#     return JSONResponse(
+#         content={},
+#         status_code=status.HTTP_200_OK,
+#         headers=response_headers,
+#     )
+
+
 @app.post("/api/v1/subtitle/process/text")
-async def process_text(text: str = Form(...)):
+async def process_text(request: Request):
+    text = (await request.json())["text"]
     tokens = tokenize_japanese_text(text)
     response = list(map(make_pronounciation_response, tokens))
     return {"processed_content": response}
