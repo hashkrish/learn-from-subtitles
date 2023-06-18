@@ -16,7 +16,13 @@
     async function handleDrop(event) {
         event.preventDefault();
         files = event.dataTransfer.files;
-        await uploadFiles();
+        uploadFiles();
+    }
+
+    function handleFileInput(event) {
+        files = event.target.files;
+        console.log(files);
+        uploadFiles();
     }
 
     function uploadFiles() {
@@ -44,11 +50,7 @@
         }
     }
 
-    function handleFileInput(event) {
-        files = event.target.files;
-        console.log(files);
-        uploadFiles();
-    }
+
 </script>
 
 <div
@@ -56,25 +58,26 @@
     on:dragover={(event) => event.preventDefault()}
     on:drop={handleDrop}
 >
-    <div class="drop-message">Drag and drop files here</div>
     <div class="file-list">
         {#if files.length > 0}
             {#each files as file}
                 <div class="file-item">{file.name}</div>
             {/each}
+        {:else}
+            <div class="drop-message">Drag and drop files here</div>
         {/if}
     </div>
     <input id="file-upload-button" type="file" on:change={handleFileInput} />
 </div>
 
-<div class="container">
-    <div class="grid-columns-2 m-4 grid p-2">
+<div class="flex place-content-center">
+    <div class="grid m-4 p-2">
         {#each subtitles as subtitle}
             <div class="m-1 border px-4 py-2">
                 <span class="text-xs text-gray-500">
                     {subtitle.start} - {subtitle.end}
                 </span>
-                <div class="my-2 flex align-middle">
+                <div class="my-2 flex flex-wrap align-middle">
                     {#each subtitle.content as token}
                         <span class="grid-columns-1 grid place-content-center">
                             <span>
