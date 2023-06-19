@@ -1,7 +1,23 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { onMount } from "svelte";
 
     const dispatch = createEventDispatcher();
+
+    export let subtitleLanguage = "en";
+
+    onMount(() => {
+        const last_subtitle_language = localStorage.getItem("last_subtitle_language");
+        if (last_subtitle_language) {
+            subtitleLanguage = last_subtitle_language;
+        }
+    });
+
+    function onSubtitleLanguageChange(event) {
+        subtitleLanguage = event.detail;
+        localStorage.setItem("last_subtitle_language", subtitleLanguage);
+        dispatch("subtitleLanguageChange", subtitleLanguage);
+    }
 </script>
 
 <select
