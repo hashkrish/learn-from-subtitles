@@ -1,7 +1,7 @@
 <script>
     export let token = {};
     export let subtitleLanguage = "en";
-    let japanese = subtitleLanguage === "ja" ? "text-xl" : "";
+    let japanese = subtitleLanguage === "ja" ? "text-3xl" : "";
 </script>
 
 <span class="grid-columns-1 grid place-content-center">

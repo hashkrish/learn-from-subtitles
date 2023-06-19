@@ -30,7 +30,7 @@
             dispatch("subtitlesUploadFilename", "Uploading..." + files[i].name);
 
             axios
-                .post("http://localhost:8001/api/v1/subtitle/process/file", formData, {
+                .post("http://127.0.0.1:8001/api/v1/subtitle/process/file", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         Authorization: get_jwt_from_localstorage()
@@ -47,6 +47,7 @@
                 })
                 .catch((error) => {
                     console.log(error);
+                    dispatch("subtitlesUploadFilename", "Error: " + error);
                 });
         }
     }
