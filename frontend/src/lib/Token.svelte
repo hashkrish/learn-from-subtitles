@@ -1,6 +1,7 @@
 <script>
     export let token = {};
     export let subtitleLanguage = "en";
+    let japanese = subtitleLanguage === "ja" ? "text-xl" : "";
 </script>
 
 <span class="grid-columns-1 grid place-content-center">
@@ -15,5 +16,7 @@
             {/if}
         </span>
     {/if}
-    <span> {token.token.replaceAll("（", "(").replaceAll("）", ")")} </span>
+    <span class={japanese}>
+        {token.token.replaceAll("（", "(").replaceAll("）", ")")}
+    </span>
 </span>
