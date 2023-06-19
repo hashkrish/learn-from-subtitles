@@ -1,17 +1,13 @@
 <script>
     import { get_jwt_from_localstorage } from "../utils/api.js";
     import { onMount } from "svelte";
+    import { createEventDispatcher } from "svelte";
+
+    const dispatch = createEventDispatcher();
 
     let files = [];
     let subtitles = [];
-
-    onMount(() => {
-        const last_subtitles = localStorage.getItem("last_subtitles");
-        if (last_subtitles) {
-            subtitles = JSON.parse(last_subtitles);
-            console.log(subtitles);
-        }
-    });
+    export let subtitleLanguage = "en";
 
     async function handleDrop(event) {
         event.preventDefault();
@@ -31,6 +27,7 @@
         for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
             formData.append("file", files[i]);
+            dispatch("subtitlesUploadFilename", "Uploading...");
 
             axios
                 .post("http://localhost:8001/api/v1/subtitle/process/file", formData, {
@@ -43,14 +40,16 @@
                     console.log(response);
                     subtitles = response.data.processed_content;
                     localStorage.setItem("last_subtitles", JSON.stringify(subtitles));
+                    localStorage.setItem("last_subtitle_language", subtitleLanguage);
+                    localStorage.setItem("last_subtitle_title", files[i].name);
+                    dispatch("subtitlesUpload", subtitles);
+                    dispatch("subtitlesUploadFilename", files[i].name);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
     }
-
-
 </script>
 
 <div
@@ -59,41 +58,11 @@
     on:drop={handleDrop}
 >
     <div class="file-list">
-        {#if files.length > 0}
-            {#each files as file}
-                <div class="file-item">{file.name}</div>
-            {/each}
-        {:else}
-            <div class="drop-message">Drag and drop files here</div>
-        {/if}
-    </div>
-    <input id="file-upload-button" type="file" on:change={handleFileInput} />
-</div>
-
-<div class="flex place-content-center">
-    <div class="grid m-4 p-2">
-        {#each subtitles as subtitle}
-            <div class="m-1 border px-4 py-2">
-                <span class="text-xs text-gray-500">
-                    {subtitle.start} - {subtitle.end}
-                </span>
-                <div class="my-2 flex flex-wrap align-middle">
-                    {#each subtitle.content as token}
-                        <span class="grid-columns-1 grid place-content-center">
-                            <span>
-                                {#if token.pronounciation !== token.token}
-                                    <span class="text-xs text-gray-500">{token.pronounciation}</span
-                                    >
-                                {:else}
-                                    <span class="text-xs text-gray-500">&nbsp;</span>
-                                {/if}
-                            </span>
-                            <span> {token.token.replaceAll("（", "(").replaceAll("）", ")")} </span>
-                        </span>
-                    {/each}
-                </div>
-            </div>
-        {/each}
+        <div class="drop-message">Drag and drop files here</div>
+        <label id="file-upload-button-label" for="file-upload-button" class="text-blue-500">
+            <span class="text-sm">or click to select files</span>
+        </label>
+        <input id="file-upload-button" type="file" value="" on:change={handleFileInput} />
     </div>
 </div>
 
@@ -104,7 +73,7 @@
         /* padding-up: 80px; */
         /* padding-bottom: 80px; */
         text-align: center;
-        cursor: pointer;
+        /* cursor: pointer; */
     }
 
     .file-list {
@@ -117,5 +86,17 @@
 
     .file-item {
         margin-bottom: 5px;
+    }
+
+    #file-upload-button {
+        color: transparent;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        width: 0;
+    }
+
+    #file-upload-button-label {
+        cursor: pointer;
     }
 </style>
