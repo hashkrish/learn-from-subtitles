@@ -14,7 +14,6 @@
             console.log(subtitles);
         }
     });
-
 </script>
 
 <div class="flex place-content-center">

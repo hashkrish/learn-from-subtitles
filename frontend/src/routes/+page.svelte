@@ -31,7 +31,11 @@
 <div class="m-2 flex place-content-center p-2"><h1 class="text-3xl">Learn from Subtitles</h1></div>
 
 <!-- <p>{debugText}</p> -->
-<Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
+<span class="flex place-content-center">
+    <Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
+    <!-- <div class="flex place-content-center py-5"><h1 class="text-3xl">→</h1></div> -->
+    <!-- <Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} /> -->
+</span>
 <DragAndDrop
     on:subtitlesUpload={onSubtitlesUpload}
     on:subtitlesUploadFilename={onSubtitlesUploadFileName}

@@ -27,7 +27,7 @@
         for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
             formData.append("file", files[i]);
-            dispatch("subtitlesUploadFilename", "Uploading...");
+            dispatch("subtitlesUploadFilename", "Uploading..." + files[i].name);
 
             axios
                 .post("http://localhost:8001/api/v1/subtitle/process/file", formData, {
