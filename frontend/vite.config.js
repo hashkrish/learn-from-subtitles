@@ -1,9 +1,15 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vitest/config";
 
-export default defineConfig({
-    plugins: [sveltekit()],
-    test: {
-        include: ["src/**/*.{test,spec}.{js,ts}"]
-    }
+export default defineConfig(({ command, mode }) => {
+    return {
+        plugins: [sveltekit()],
+        test: {
+            include: ["src/**/*.{test,spec}.{js,ts}"]
+        },
+        define: {
+            __APP_VERSION__: JSON.stringify(module.import("package.json").version),
+            __APP_BUILD__: JSON.stringify(String(new Date()))
+        }
+    };
 });
