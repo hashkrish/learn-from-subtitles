@@ -1,6 +1,6 @@
 <script>
     import { get_jwt_from_localstorage } from "../utils/api.js";
-    import { onMount } from "svelte";
+    import { APIURL } from "../config.js";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
@@ -30,7 +30,7 @@
             dispatch("subtitlesUploadFilename", "Uploading..." + files[i].name);
 
             axios
-                .post("http://127.0.0.1:8001/api/v1/subtitle/process/file", formData, {
+                .post(`${APIURL}/subtitle/process/file`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         Authorization: get_jwt_from_localstorage()

@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
+    import { APIURL } from "../config.js";
     let processedText = [];
     let text = "私は日本語を勉強しています。";
-    let baseurl = "http://localhost:8001/";
     onMount(() => {
         axios
-            .post(baseurl + "api/v1/subtitle/process/text", {
+            .post(`${APIURL}/subtitle/process/text`, {
                 text: text
             })
             .then((response) => {
