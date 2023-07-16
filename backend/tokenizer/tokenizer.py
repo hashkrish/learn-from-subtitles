@@ -8,8 +8,7 @@ def tokenize_japanese_text(text):
     lines = result.split("\n")
     tokens = []
     for line in lines[:-2]:
-        surface, feature = line.split("\t")
-        feature = feature
+        surface = line.split("\t")[0]
         tokens.append(surface)
     return tokens
 
