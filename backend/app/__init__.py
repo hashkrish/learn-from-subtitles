@@ -40,7 +40,7 @@ def checkstatus(request: Request):
 
 @app.post("/api/v1/jwt")
 def jwt_token(request: Request):
-    data = request.json()
+    _ = request.json()
     return {
         "message": "success",
         "token": create_access_token(
