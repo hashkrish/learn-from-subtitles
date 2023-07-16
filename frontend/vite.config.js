@@ -8,7 +8,6 @@ export default defineConfig(({ command, mode }) => {
             include: ["src/**/*.{test,spec}.{js,ts}"]
         },
         define: {
-            __APP_VERSION__: JSON.stringify(module.import("package.json").version),
             __APP_BUILD__: JSON.stringify(String(new Date()))
         }
     };
