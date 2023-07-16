@@ -66,15 +66,18 @@ async def process_file(file: UploadFile = File(...)):
     contents = await file.read()
 
     response = []
-    for subtitle in parse_subtitle_text(contents.decode("utf-8")):
-        tokens = tokenize_japanese_text(subtitle.content)
-        response.append(
-            {
-                "start": subtitle.start.total_seconds(),
-                "end": subtitle.end.total_seconds(),
-                "content": list(map(make_pronounciation_response, tokens)),
-            }
-        )
+    try:
+        for subtitle in parse_subtitle_text(contents.decode("utf-8")):
+            tokens = tokenize_japanese_text(subtitle.content)
+            response.append(
+                {
+                    "start": subtitle.start.total_seconds(),
+                    "end": subtitle.end.total_seconds(),
+                    "content": list(map(make_pronounciation_response, tokens)),
+                }
+            )
+    except ValueError:
+        return {"error": "Invalid SRT file", "processed_content": []}, 400
     logger.info(f"Processing took {time.time() - start} seconds")
     return {"processed_content": response}
 

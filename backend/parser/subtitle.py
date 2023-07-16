@@ -2,5 +2,8 @@ import srt
 
 
 def parse_subtitle_text(contents: str):
-    subs = srt.parse(contents)
+    try:
+        subs = srt.parse(contents)
+    except srt.SRTParseError:
+        raise ValueError("Invalid subtitle file")
     return subs
