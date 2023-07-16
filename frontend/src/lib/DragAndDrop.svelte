@@ -63,7 +63,13 @@
         <label id="file-upload-button-label" for="file-upload-button" class="text-blue-500">
             <span class="text-sm">or click to select files</span>
         </label>
-        <input id="file-upload-button" type="file" value="" on:change={handleFileInput} />
+        <input
+            id="file-upload-button"
+            type="file"
+            accept=".srt"
+            value=""
+            on:change={handleFileInput}
+        />
     </div>
 </div>
 
