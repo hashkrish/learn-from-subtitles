@@ -1,5 +1,5 @@
 <script>
-    export let errorText = "";
+	export let errorText = '';
 </script>
 
 <p>{errorText}</p>
