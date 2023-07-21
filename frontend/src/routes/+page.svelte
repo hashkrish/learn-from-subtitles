@@ -13,6 +13,7 @@
 	let title = 'Sample Header';
 	let subtitles = [];
 	let subtitleLanguage = 'en';
+	let showSidebar = false;
 
 	function onSubtitlesUpload(event) {
 		subtitles = event.detail;
@@ -39,6 +40,12 @@
 	<Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
 	<!-- <div class="flex place-content-center py-5"><h1 class="text-3xl">→</h1></div> -->
 	<!-- <Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} /> -->
+	<button
+		class="btn-primary m-4 p-2 rounded bg-grey-200"
+		on:click={() => {
+			showSidebar = !showSidebar;
+		}}>Show/Hide Sidebar</button
+	>
 </span>
 <DragAndDrop
 	on:subtitlesUpload={onSubtitlesUpload}
@@ -49,8 +56,10 @@
 	<MainContent>
 		<SubtitleList {subtitles} {subtitleLanguage} />
 	</MainContent>
-	<Sidebar>
-		<TextTokenizer />
-		<UsagePanel />
-	</Sidebar>
+	{#if showSidebar}
+		<Sidebar>
+			<TextTokenizer />
+			<UsagePanel />
+		</Sidebar>
+	{/if}
 </Container>
