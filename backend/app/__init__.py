@@ -98,6 +98,7 @@ async def process_file(file: UploadFile = File(...)):
 #     )
 
 
+@jwt_token_required
 @app.post("/api/v1/subtitle/process/text")
 async def process_text(request: Request):
     text = (await request.json())["text"]
