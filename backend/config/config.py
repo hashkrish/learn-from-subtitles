@@ -4,9 +4,12 @@ from functools import lru_cache
 from logger import logger
 
 if os.environ.get("ENVIRONMENT", "").upper() != "PRODUCTION":
+    logger.info("Loading development environment variables")
     os.environ["JWT_SECRET"] = "secret"
     os.environ["JWT_ALGORITHM"] = "HS256"
     os.environ["JWT_EXPIRE_MINUTES"] = "30"
+else:
+    logger.info("Loading production environment variables")
 
 
 @lru_cache

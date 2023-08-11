@@ -57,6 +57,7 @@ def make_pronounciation_response(token):
     }
 
 
+@jwt_token_required
 @app.post("/api/v1/subtitle/process/file")
 async def process_file(file: UploadFile = File(...)):
     #
