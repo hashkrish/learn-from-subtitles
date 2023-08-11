@@ -8,11 +8,11 @@
 	{#if subtitleLanguage === 'ja'}
 		<span>
 			{#if token.pronounciation !== token.token}
-				<span class="text-xs text-gray-500">
+				<span class="text-xs text-gray-500 select-none">
 					{token.pronounciation}
 				</span>
 			{:else}
-				<span class="text-xs text-gray-500">&nbsp;</span>
+				<span class="text-xs text-gray-500 select-none">&nbsp;</span>
 			{/if}
 		</span>
 	{/if}
