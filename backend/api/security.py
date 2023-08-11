@@ -29,16 +29,15 @@ def jwt_token_required(func):
                 _ = jwt.decode(
                     token, Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM]
                 )
-                # if the token is valid return the function with the request
                 return func(request, *args, **kwargs)
+
             except jwt.ExpiredSignatureError:
-                # if the token is expired return a 401 error
                 return Response("Token expired", status_code=401)
+
             except jwt.InvalidSignatureError:
-                # if the token signature is invalid return a 401 error
                 return Response("Invalid token signature", status_code=401)
+
             except jwt.DecodeError:
-                # if the token is invalid return a 401 error
                 return Response("Invalid token", status_code=401)
         else:
             # if there is no token return a 401 error

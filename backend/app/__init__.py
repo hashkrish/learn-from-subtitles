@@ -57,8 +57,8 @@ def make_pronounciation_response(token):
     }
 
 
-@jwt_token_required
 @app.post("/api/v1/subtitle/process/file")
+@jwt_token_required
 async def process_file(file: UploadFile = File(...)):
     #
     # TODO: Implement server side events
@@ -98,8 +98,8 @@ async def process_file(file: UploadFile = File(...)):
 #     )
 
 
-@jwt_token_required
 @app.post("/api/v1/subtitle/process/text")
+@jwt_token_required
 async def process_text(request: Request):
     text = (await request.json())["text"]
     tokens = tokenize_japanese_text(text)
