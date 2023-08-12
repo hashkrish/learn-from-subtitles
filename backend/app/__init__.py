@@ -1,18 +1,21 @@
+from sqlite3 import OperationalError
 import time
 from functools import lru_cache
 
-from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 from parser.subtitle import parse_subtitle_text
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, Request, Response, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from api.security import create_access_token, jwt_token_required
 from logger import logger
 from tokenizer.tokenizer import get_japanese_pronounciation, tokenize_japanese_text
+from db.sqlalchemy import JapaneseEnglish, create_tables, get_db
 
 load_dotenv(".env")
 
@@ -29,6 +32,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# @app.get("/create-tables")
+# def create_tables_endpoint():
+#     create_tables()
+#     return {"message": "OK"}
 
 
 @app.get("/")
@@ -107,3 +116,25 @@ async def process_text(request: Request):
     tokens = tokenize_japanese_text(text)
     response = list(map(make_pronounciation_response, tokens))
     return {"processed_content": response}
+
+
+@lru_cache(maxsize=10000)
+def get_ja_en_word(db, word):
+    try:
+        items = (
+            db.query(JapaneseEnglish)
+            .filter(JapaneseEnglish.word == word)
+            .limit(10)
+            .all()
+        )
+    except OperationalError as e:
+        items = {
+            "error": "Database error",
+            "message": str(e),
+        }
+    return items
+
+
+@app.get("/api/v1/translate/ja/en")
+async def get_ja_en(request: Request, word: str, db: Session = Depends(get_db)):
+    return get_ja_en_word(db, word)

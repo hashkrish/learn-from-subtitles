@@ -8,6 +8,7 @@ if os.environ.get("ENVIRONMENT", "").upper() != "PRODUCTION":
     os.environ["JWT_SECRET"] = "secret"
     os.environ["JWT_ALGORITHM"] = "HS256"
     os.environ["JWT_EXPIRE_MINUTES"] = "30"
+    os.environ["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 else:
     logger.info("Loading production environment variables")
 
@@ -30,3 +31,4 @@ class Config:
     JWT_SECRET = get_env_variable("JWT_SECRET")
     JWT_ALGORITHM = get_env_variable("JWT_ALGORITHM")
     JWT_EXPIRE_MINUTES = float(get_env_variable("JWT_EXPIRE_MINUTES"))
+    SQLALCHEMY_DATABASE_URI = get_env_variable("SQLALCHEMY_DATABASE_URI")
