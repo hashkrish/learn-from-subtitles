@@ -5,6 +5,7 @@
 	import Dropdown from '$lib/Dropdown.svelte';
 	import SubtitleHeader from '$lib/SubtitleHeader.svelte';
 	import SentenceCard from '$lib/SentenceCard.svelte';
+	import Glossary from '$lib/Glossary.svelte';
 
 	let debugText = 'Debug Text';
 	let title = 'Sample Header';
@@ -53,5 +54,6 @@
 <Container className="grid place-content-stretch">
 	<MainContent className="">
 		<SentenceCard {currentSubtitleIndex} {subtitleLanguage} />
+		<Glossary {subtitleLanguage} />
 	</MainContent>
 </Container>
