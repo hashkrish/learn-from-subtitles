@@ -46,6 +46,7 @@
 			showSidebar = !showSidebar;
 		}}>Show/Hide Sidebar</button
 	>
+	<a href="/card" class="btn-primary m-4 p-2 rounded bg-grey-200">Card view</a>
 </span>
 <DragAndDrop
 	on:subtitlesUpload={onSubtitlesUpload}

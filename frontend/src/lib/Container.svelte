@@ -1,6 +1,7 @@
 <script lang="ts">
+	export let className = 'flex justify-center';
 </script>
 
-<div class="flex justify-center">
+<div class={className}>
 	<slot />
 </div>

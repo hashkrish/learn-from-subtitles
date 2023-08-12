@@ -38,20 +38,20 @@
 	<Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
 	<!-- <div class="flex place-content-center py-5"><h1 class="text-3xl">→</h1></div> -->
 	<!-- <Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} /> -->
-	<button
-		class="btn-primary m-4 p-2 rounded bg-grey-200"
-		on:click={() => {
-			showSidebar = !showSidebar;
-		}}>Show/Hide Sidebar</button
-	>
+	<!-- <button -->
+	<!-- 	class="btn-primary m-4 p-2 rounded bg-grey-200" -->
+	<!-- 	on:click={() => { -->
+	<!-- 		showSidebar = !showSidebar; -->
+	<!-- 	}}>Show/Hide Sidebar</button -->
+	<!-- > -->
 </span>
 <DragAndDrop
 	on:subtitlesUpload={onSubtitlesUpload}
 	on:subtitlesUploadFilename={onSubtitlesUploadFileName}
 />
 <SubtitleHeader {title} />
-<Container>
-	<MainContent>
+<Container className="grid place-content-stretch">
+	<MainContent className="">
 		<SentenceCard {currentSubtitleIndex} {subtitleLanguage} />
 	</MainContent>
 </Container>
