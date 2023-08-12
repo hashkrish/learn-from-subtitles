@@ -1,6 +1,8 @@
 from sqlite3 import OperationalError
 import time
 from functools import lru_cache
+import unicodedata
+import sys
 
 from sqlalchemy.orm import Session
 from parser.subtitle import parse_subtitle_text
@@ -135,6 +137,124 @@ def get_ja_en_word(db, word):
     return items
 
 
+half_to_full_width = {
+    "｡": "。",
+    "｢": "「",
+    "｣": "」",
+    "､": "、",
+    "･": "・",
+    "ﾞ": "゛",
+    "ﾟ": "゜",
+    "ｰ": "ー",
+    "ｧ": "ァ",
+    "ｱ": "ア",
+    "ｨ": "ィ",
+    "ｲ": "イ",
+    "ｩ": "ゥ",
+    "ｳ": "ウ",
+    "ｳﾞ": "ヴ",
+    "ｪ": "ェ",
+    "ｴ": "エ",
+    "ｫ": "ォ",
+    "ｵ": "オ",
+    "ｶ": "カ",
+    "ｶﾞ": "ガ",
+    "ｷ": "キ",
+    "ｷﾞ": "ギ",
+    "ｸ": "ク",
+    "ｸﾞ": "グ",
+    "ｹ": "ケ",
+    "ｹﾞ": "ゲ",
+    "ｺ": "コ",
+    "ｺﾞ": "ゴ",
+    "ｻ": "サ",
+    "ｻﾞ": "ザ",
+    "ｼ": "シ",
+    "ｼﾞ": "ジ",
+    "ｽ": "ス",
+    "ｽﾞ": "ズ",
+    "ｾ": "セ",
+    "ｾﾞ": "ゼ",
+    "ｿ": "ソ",
+    "ｿﾞ": "ゾ",
+    "ﾀ": "タ",
+    "ﾀﾞ": "ダ",
+    "ﾁ": "チ",
+    "ﾁﾞ": "ヂ",
+    "ｯ": "ッ",
+    "ﾂ": "ツ",
+    "ﾂﾞ": "ヅ",
+    "ﾃ": "テ",
+    "ﾃﾞ": "デ",
+    "ﾄ": "ト",
+    "ﾄﾞ": "ド",
+    "ﾅ": "ナ",
+    "ﾆ": "ニ",
+    "ﾇ": "ヌ",
+    "ﾈ": "ネ",
+    "ﾉ": "ノ",
+    "ﾊ": "ハ",
+    "ﾊﾞ": "バ",
+    "ﾊﾟ": "パ",
+    "ﾋ": "ヒ",
+    "ﾋﾞ": "ビ",
+    "ﾋﾟ": "ピ",
+    "ﾌ": "フ",
+    "ﾌﾞ": "ブ",
+    "ﾌﾟ": "プ",
+    "ﾍ": "ヘ",
+    "ﾍﾞ": "ベ",
+    "ﾍﾟ": "ペ",
+    "ﾎ": "ホ",
+    "ﾎﾞ": "ボ",
+    "ﾎﾟ": "ポ",
+    "ﾏ": "マ",
+    "ﾐ": "ミ",
+    "ﾑ": "ム",
+    "ﾒ": "メ",
+    "ﾓ": "モ",
+    "ｬ": "ャ",
+    "ﾔ": "ヤ",
+    "ｭ": "ュ",
+    "ﾕ": "ユ",
+    "ｮ": "ョ",
+    "ﾖ": "ヨ",
+    "ﾗ": "ラ",
+    "ﾘ": "リ",
+    "ﾙ": "ル",
+    "ﾚ": "レ",
+    "ﾛ": "ロ",
+    "ﾜ": "ワ",
+    "ｦ": "ヲ",
+    "ｦﾞ": "ヺ",
+    "ﾝ": "ン",
+}
+
+
+def convert_to_full_width(text):
+    full_width_text = []
+    for i, char in enumerate(text):
+        if unicodedata.east_asian_width(char) == "H":
+            # full_width_char = chr(ord(char) + 0xFEE0)
+            try:
+                if char in ["ﾞ", "ﾟ"]:
+                    char = text[i - 1] + char
+                    full_width_text.pop()
+
+                full_width_char = half_to_full_width[char]
+            except KeyError:
+                print("KeyError: " + char, file=sys.stderr)
+                full_width_char = char
+            except IndexError:
+                print("IndexError: " + char, text, file=sys.stderr)
+                full_width_char = char
+            full_width_text.append(full_width_char)
+        else:
+            full_width_text.append(char)
+    return "".join(full_width_text)
+
+
 @app.get("/api/v1/translate/ja/en")
 async def get_ja_en(request: Request, word: str, db: Session = Depends(get_db)):
-    return get_ja_en_word(db, word)
+    full_width_word = convert_to_full_width(word)
+    return get_ja_en_word(db, full_width_word)
