@@ -5,6 +5,8 @@
 	import Token from '$lib/Token.svelte';
 	import { secondsToTimestamp } from '../utils/time';
 	import { writable } from 'svelte/store';
+	import { APIURL } from '$config';
+	import axios from 'axios';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -56,7 +58,21 @@
 		});
 	});
 
+	async function getWordTranslation(word, from, to) {
+		from = from || 'ja';
+		to = to || 'en';
+		const url = `${APIURL}/translate/${from}/${to}?word=${word}`;
+		const response = await axios.get(url);
+		if (response.status === 200) {
+			return response.data;
+		} else {
+			return null;
+		}
+	}
+
 	let subtitle = { content: { token: '', pronounciation: '' }, start: 0, end: 0 };
+	let meaning = {};
+
 	$: subtitle = $subtitleStore[currentSubtitleIndex] || { content: '', start: 0, end: 0 };
 	$: currentSubtitleIndex = $cardStore.currentSubtitleIndex;
 </script>
@@ -66,9 +82,24 @@
 >
 	<div class="m-5 p-5 grid lg:grid-cols-2 gap-4">
 		{#each subtitle.content as token}
-			<div class="grid grid-cols-2 place-items-center items-center">
+			<div
+				class="grid grid-cols-2 place-items-center items-center rounded-lg border border-gray-200"
+			>
 				<Token {token} {subtitleLanguage} />
-				<span class="place-self-start align-text-bottom">meaning</span>
+				<span class="place-self-start align-text-bottom">
+					{#await getWordTranslation(token.token)}
+						Loading...
+					{:then response}
+						{#if response.length > 0}
+							{response[0].meaning.replaceAll(':', ', ')}
+						{:else}
+							Not found
+						{/if}
+					{:catch error}
+						{error}
+					{/await}
+					<!-- {getWordTranslation(token.token)} -->
+				</span>
 			</div>
 		{/each}
 	</div>
