@@ -20,7 +20,11 @@ load_dotenv(".env")
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://learn-from-subtitles.netlify.app",
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,7 +62,6 @@ def make_pronounciation_response(token):
 
 
 @app.post("/api/v1/subtitle/process/file")
-@jwt_token_required
 async def process_file(request: Request, file: UploadFile = File(...)):
     #
     # TODO: Implement server side events
@@ -99,7 +102,6 @@ async def process_file(request: Request, file: UploadFile = File(...)):
 
 
 @app.post("/api/v1/subtitle/process/text")
-@jwt_token_required
 async def process_text(request: Request):
     text = (await request.json())["text"]
     tokens = tokenize_japanese_text(text)
