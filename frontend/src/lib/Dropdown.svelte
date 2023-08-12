@@ -10,11 +10,12 @@
 		const last_subtitle_language = localStorage.getItem('last_subtitle_language');
 		if (last_subtitle_language) {
 			subtitleLanguage = last_subtitle_language;
+			dispatch('subtitleLanguageChange', subtitleLanguage);
 		}
 	});
 
 	function onSubtitleLanguageChange(event) {
-		subtitleLanguage = event.detail;
+		subtitleLanguage = event.target.value;
 		localStorage.setItem('last_subtitle_language', subtitleLanguage);
 		dispatch('subtitleLanguageChange', subtitleLanguage);
 	}
@@ -22,7 +23,8 @@
 
 <select
 	class="m-4 rounded border p-2"
-	on:change={(event) => dispatch('subtitleLanguageChange', event.target.value)}
+	on:change={onSubtitleLanguageChange}
+	bind:value={subtitleLanguage}
 >
 	<option value="en">English</option>
 	<option value="ja">Japanese</option>
