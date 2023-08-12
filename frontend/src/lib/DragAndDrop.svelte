@@ -1,4 +1,5 @@
 <script>
+	import axios from 'axios';
 	import { get_jwt_from_localstorage } from '../utils/api';
 	import { APIURL } from '../config';
 	import { createEventDispatcher } from 'svelte';
@@ -53,10 +54,12 @@
 	}
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
 	class="drop-area m-4 grid place-content-center p-1"
 	on:dragover={(event) => event.preventDefault()}
 	on:drop={handleDrop}
+	aria-label="Drop SRT file here"
 >
 	<div class="file-list">
 		<div class="drop-message">Drag and drop files here</div>
@@ -85,9 +88,9 @@
 		color: #999;
 	}
 
-	.file-item {
-		margin-bottom: 5px;
-	}
+	/* .file-item { */
+	/* 	margin-bottom: 5px; */
+	/* } */
 
 	#file-upload-button {
 		color: transparent;

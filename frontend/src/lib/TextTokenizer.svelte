@@ -1,4 +1,5 @@
 <script>
+	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import { APIURL } from '../config';
 	let processedText = [];
