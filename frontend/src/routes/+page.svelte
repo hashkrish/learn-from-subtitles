@@ -1,13 +1,13 @@
 <script>
 	import MainContent from '$lib/MainContent.svelte';
 	import UsagePanel from '$lib/UsagePanel.svelte';
-	import Container from '../lib/Container.svelte';
-	import DragAndDrop from '../lib/DragAndDrop.svelte';
-	import Dropdown from '../lib/Dropdown.svelte';
-	import Sidebar from '../lib/Sidebar.svelte';
-	import SubtitleHeader from '../lib/SubtitleHeader.svelte';
-	import SubtitleList from '../lib/SubtitleList.svelte';
-	import TextTokenizer from '../lib/TextTokenizer.svelte';
+	import Container from '$lib/Container.svelte';
+	import DragAndDrop from '$lib/DragAndDrop.svelte';
+	import Dropdown from '$lib/Dropdown.svelte';
+	import Sidebar from '$lib/Sidebar.svelte';
+	import SubtitleHeader from '$lib/SubtitleHeader.svelte';
+	import SubtitleList from '$lib/SubtitleList.svelte';
+	import TextTokenizer from '$lib/TextTokenizer.svelte';
 
 	let debugText = '';
 	let title = 'Sample Header';
