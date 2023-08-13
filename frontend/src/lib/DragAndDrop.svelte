@@ -3,6 +3,7 @@
 	import { get_jwt_from_localstorage } from '../utils/api';
 	import { APIURL } from '../config';
 	import { createEventDispatcher } from 'svelte';
+	import { subtitleStore } from '../store/subtitles';
 
 	const dispatch = createEventDispatcher();
 
@@ -43,6 +44,7 @@
 					localStorage.setItem('last_subtitles', JSON.stringify(subtitles));
 					localStorage.setItem('last_subtitle_language', subtitleLanguage);
 					localStorage.setItem('last_subtitle_title', files[i].name);
+					$subtitleStore = subtitles;
 					dispatch('subtitlesUpload', subtitles);
 					dispatch('subtitlesUploadFilename', files[i].name);
 				})
