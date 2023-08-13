@@ -95,10 +95,8 @@ const half_to_full_width: { [key: string]: string } = {
 const half_to_full_width_set = new Set(Object.keys(half_to_full_width));
 
 export function convertToFullWidth(text: string) {
-	console.log(text);
 	let full_width_text = '';
 	for (let i = 0; i < text.length; i++) {
-		console.log(text[i]);
 		let char = text[i];
 		if (half_to_full_width_set.has(char)) {
 			try {
@@ -107,7 +105,6 @@ export function convertToFullWidth(text: string) {
 					full_width_text = full_width_text.slice(0, -1);
 				}
 				full_width_text += half_to_full_width[char];
-				console.log(text, full_width_text);
 			} catch (e) {
 				console.log(e);
 				full_width_text += char;
@@ -116,6 +113,5 @@ export function convertToFullWidth(text: string) {
 			full_width_text += char;
 		}
 	}
-	console.log(full_width_text);
 	return full_width_text;
 }
