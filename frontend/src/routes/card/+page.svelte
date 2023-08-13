@@ -6,6 +6,9 @@
 	import SubtitleHeader from '$lib/SubtitleHeader.svelte';
 	import SentenceCard from '$lib/SentenceCard.svelte';
 	import Glossary from '$lib/Glossary.svelte';
+	import Sidebar from '$lib/Sidebar.svelte';
+	import TextTokenizer from '$lib/TextTokenizer.svelte';
+	import UsagePanel from '$lib/UsagePanel.svelte';
 
 	let debugText = 'Debug Text';
 	let title = 'Sample Header';
@@ -32,8 +35,11 @@
 	}
 </script>
 
-<div class="m-2 flex place-content-center p-2"><h1 class="text-3xl">Learn from Subtitles</h1></div>
-
+<div class="m-2 flex place-content-center p-2">
+	<a href="/">
+		<h1 class="text-3xl">Learn from Subtitles</h1>
+	</a>
+</div>
 <!-- <p>{debugText}</p> -->
 <span class="flex place-content-center">
 	<Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
@@ -45,6 +51,8 @@
 	<!-- 		showSidebar = !showSidebar; -->
 	<!-- 	}}>Show/Hide Sidebar</button -->
 	<!-- > -->
+
+	<a href="/list" class="btn-primary m-4 p-2 rounded bg-grey-200">List view</a>
 </span>
 <DragAndDrop
 	on:subtitlesUpload={onSubtitlesUpload}
@@ -56,4 +64,10 @@
 		<SentenceCard {currentSubtitleIndex} {subtitleLanguage} />
 		<Glossary {subtitleLanguage} />
 	</MainContent>
+	{#if showSidebar}
+		<Sidebar>
+			<TextTokenizer />
+			<UsagePanel />
+		</Sidebar>
+	{/if}
 </Container>

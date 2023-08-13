@@ -1,19 +1,21 @@
-<script>
+<script lang="ts">
 	import MainContent from '$lib/MainContent.svelte';
-	import UsagePanel from '$lib/UsagePanel.svelte';
 	import Container from '$lib/Container.svelte';
 	import DragAndDrop from '$lib/DragAndDrop.svelte';
 	import Dropdown from '$lib/Dropdown.svelte';
-	import Sidebar from '$lib/Sidebar.svelte';
 	import SubtitleHeader from '$lib/SubtitleHeader.svelte';
-	import SubtitleList from '$lib/SubtitleList.svelte';
+	import SentenceCard from '$lib/SentenceCard.svelte';
+	import Glossary from '$lib/Glossary.svelte';
+	import Sidebar from '$lib/Sidebar.svelte';
 	import TextTokenizer from '$lib/TextTokenizer.svelte';
+	import UsagePanel from '$lib/UsagePanel.svelte';
 
-	let debugText = '';
+	let debugText = 'Debug Text';
 	let title = 'Sample Header';
 	let subtitles = [];
 	let subtitleLanguage = 'en';
 	let showSidebar = false;
+	let currentSubtitleIndex = 0;
 
 	function onSubtitlesUpload(event) {
 		subtitles = event.detail;
@@ -39,23 +41,25 @@
 <span class="flex place-content-center">
 	<Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} />
 	<!-- <div class="flex place-content-center py-5"><h1 class="text-3xl">→</h1></div> -->
-	<!-- <Dropdown on:subtitleLanguageChange={onSubtitleLanguageChange} /> -->
 	<button
 		class="btn-primary m-4 p-2 rounded bg-grey-200"
 		on:click={() => {
 			showSidebar = !showSidebar;
-		}}>Show/Hide Sidebar</button
+		}}
 	>
-	<a href="/card" class="btn-primary m-4 p-2 rounded bg-grey-200">Card view</a>
+		Show/Hide Sidebar
+	</button>
+	<a href="/list" class="btn-primary m-4 p-2 rounded bg-grey-200">List view</a>
 </span>
 <DragAndDrop
 	on:subtitlesUpload={onSubtitlesUpload}
 	on:subtitlesUploadFilename={onSubtitlesUploadFileName}
 />
 <SubtitleHeader {title} />
-<Container>
-	<MainContent>
-		<SubtitleList {subtitles} {subtitleLanguage} />
+<Container className="grid place-content-stretch">
+	<MainContent className="">
+		<SentenceCard {currentSubtitleIndex} {subtitleLanguage} />
+		<Glossary {subtitleLanguage} />
 	</MainContent>
 	{#if showSidebar}
 		<Sidebar>

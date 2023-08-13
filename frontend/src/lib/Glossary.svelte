@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { subtitleStore } from '../store/subtitles';
+	import { subtitleStore } from '$stores/subtitles';
 	import { cardStore } from '$stores/card';
 	import Token from '$lib/Token.svelte';
 	import { secondsToTimestamp } from '../utils/time';
@@ -39,7 +39,6 @@
 				: 0;
 		if (last_subtitles) {
 			$subtitleStore = JSON.parse(last_subtitles);
-			console.log($subtitleStore);
 		}
 		currentSubtitleIndex = last_subtitle_index > 0 ? last_subtitle_index : 0;
 

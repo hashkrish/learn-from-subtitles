@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import Subtitle from './Subtitle.svelte';
-	import { subtitleStore } from '../store/subtitles';
+	import { subtitleStore } from '$stores/subtitles';
 
 	export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -12,7 +12,6 @@
 		const last_subtitle_title = localStorage.getItem('last_subtitle_title');
 		if (last_subtitles) {
 			$subtitleStore = JSON.parse(last_subtitles);
-			console.log($subtitleStore);
 		}
 	});
 </script>

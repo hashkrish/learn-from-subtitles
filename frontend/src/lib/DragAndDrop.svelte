@@ -3,7 +3,7 @@
 	import { get_jwt_from_localstorage } from '../utils/api';
 	import { APIURL } from '../config';
 	import { createEventDispatcher } from 'svelte';
-	import { subtitleStore } from '../store/subtitles';
+	import { subtitleStore } from '$stores/subtitles';
 
 	const dispatch = createEventDispatcher();
 
