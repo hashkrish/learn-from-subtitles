@@ -2,11 +2,11 @@
 	import { onMount } from 'svelte';
 	import { subtitleStore } from '$stores/subtitles';
 	import { cardStore } from '$stores/card';
+	import { localCache, clearLocalCache } from '$stores/cache';
 	import Token from '$lib/Token.svelte';
-	import { secondsToTimestamp } from '../utils/time';
-	import { writable } from 'svelte/store';
 	import { APIURL } from '$config';
 	import axios from 'axios';
+	import { getIgnoreTokens } from '$utils/frequency';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -27,6 +27,7 @@
 		currentSubtitleIndex -= 1;
 		localStorage.setItem('last_subtitle_index', currentSubtitleIndex);
 	};
+	const ignoreTokens = getIgnoreTokens() || new Set();
 
 	onMount(() => {
 		const last_subtitles = localStorage.getItem('last_subtitles');
@@ -63,6 +64,8 @@
 		const url = `${APIURL}/translate/${from}/${to}?word=${word}`;
 		const response = await axios.get(url);
 		if (response.status === 200) {
+			$localCache[word] = response.data[0]?.meaning.replaceAll(':', ', ') || 'Not found';
+			console.log($localCache);
 			return response.data;
 		} else {
 			return null;
@@ -81,25 +84,30 @@
 >
 	<div class="m-5 p-5 grid lg:grid-cols-2 gap-4">
 		{#each subtitle.content as token}
-			<div
-				class="grid grid-cols-2 place-items-center items-center rounded-lg border border-gray-200"
-			>
-				<Token {token} {subtitleLanguage} />
-				<span class="place-self-start align-text-bottom">
-					{#await getWordTranslation(token.token)}
-						Loading...
-					{:then response}
-						{#if response.length > 0}
-							{response[0].meaning.replaceAll(':', ', ')}
+			{#if !ignoreTokens.has(token.token)}
+				<div
+					class="grid grid-cols-2 place-items-center items-center rounded-lg border border-gray-200"
+				>
+					<Token {token} {subtitleLanguage} />
+					<span class="place-self-start align-text-bottom">
+						{#if token.token in $localCache}
+							{$localCache[token.token]}
 						{:else}
-							Not found
+							{#await getWordTranslation(token.token)}
+								Loading...
+							{:then response}
+								{#if response.length > 0}
+									{response[0].meaning.replaceAll(':', ', ')}
+								{:else}
+									Not found
+								{/if}
+							{:catch error}
+								{error}
+							{/await}
 						{/if}
-					{:catch error}
-						{error}
-					{/await}
-					<!-- {getWordTranslation(token.token)} -->
-				</span>
-			</div>
+					</span>
+				</div>
+			{/if}
 		{/each}
 	</div>
 </div>

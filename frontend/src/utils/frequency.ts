@@ -1,4 +1,3 @@
-import { subtitleStore } from '$stores/subtitles';
 const ignoreTokens = new Set([
 	'!',
 	'(',
@@ -16,7 +15,12 @@ const ignoreTokens = new Set([
 	'の'
 ]);
 
+export const getIgnoreTokens = () => {
+	return ignoreTokens;
+};
+
 let frequency = {};
+
 const subtitleToTokens = (subtitle) => {
 	const tokens = subtitle.content.reduce((acc, cur) => {
 		if (ignoreTokens.has(cur.token)) {
