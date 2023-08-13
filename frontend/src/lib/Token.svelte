@@ -1,4 +1,6 @@
 <script>
+	import { convertToFullWidth } from '$utils/lang_jp';
+
 	export let token = {};
 	export let subtitleLanguage = 'en';
 	let japanese = '';
@@ -18,6 +20,6 @@
 		</span>
 	{/if}
 	<span class={japanese}>
-		{token?.token?.replaceAll('（', '(').replaceAll('）', ')')}
+		{convertToFullWidth(token?.token)?.replaceAll('（', '(').replaceAll('）', ')')}
 	</span>
 </span>
