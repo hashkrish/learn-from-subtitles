@@ -7,10 +7,12 @@
 	import { APIURL } from '$config';
 	import axios from 'axios';
 	import { getIgnoreTokens } from '$utils/frequency';
+	import { debounce } from 'lodash';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
 	export let currentSubtitleIndex = 0;
+	let debouncedAPICall;
 	const incrementCurrentSubtitleIndex = () => {
 		currentSubtitleIndex = parseInt(currentSubtitleIndex);
 		if (currentSubtitleIndex >= $subtitleStore.length - 1) {
@@ -27,7 +29,53 @@
 		currentSubtitleIndex -= 1;
 		localStorage.setItem('last_subtitle_index', currentSubtitleIndex);
 	};
-	const ignoreTokens = getIgnoreTokens() || new Set();
+	let ignoreTokens = getIgnoreTokens() || new Set();
+	const myIgnoreTokens = new Set([
+		'だ',
+		'です',
+		'ます',
+		'て',
+		'に',
+		'を',
+		'は',
+		'が',
+		'と',
+		'の',
+		'で',
+		'た',
+		'し',
+		'ない',
+		'も',
+		'な',
+		'い',
+		'か',
+		'よ',
+		'ね',
+		'ぞ',
+		'ぜ',
+		'ら',
+		'ん',
+		'あ',
+		'え',
+		'(',
+		')',
+		'（',
+		'）',
+		'１',
+		'２',
+		'３',
+		'４',
+		'５',
+		'６',
+		'７',
+		'８',
+		'９',
+		'０',
+		'“',
+		'”',
+		'))'
+	]);
+	let hideParticles = true;
 
 	onMount(() => {
 		const last_subtitles = localStorage.getItem('last_subtitles');
@@ -43,6 +91,14 @@
 		}
 		currentSubtitleIndex = last_subtitle_index > 0 ? last_subtitle_index : 0;
 
+		if (localStorage.getItem('hideParticles') === 'false') {
+			hideParticles = false;
+		}
+		if (hideParticles) {
+			for (const token of myIgnoreTokens) {
+				ignoreTokens.add(token);
+			}
+		}
 		// add event listener for right arrow
 		window.addEventListener('keydown', (event) => {
 			if (event.key === 'ArrowRight') {
@@ -61,15 +117,24 @@
 	async function getWordTranslation(word, from, to) {
 		from = from || 'ja';
 		to = to || 'en';
+
+		// if (debouncedAPICall) {
+		// 	debouncedAPICall.cancel();
+		// }
+		//
+		// debouncedAPICall = debounce(async (word: string, from: string, to: string) => {
+
 		const url = `${APIURL}/translate/${from}/${to}?word=${word}`;
 		const response = await axios.get(url);
 		if (response.status === 200) {
 			$localCache[word] = response.data[0]?.meaning.replaceAll(':', ', ') || 'Not found';
-			console.log($localCache);
 			return response.data;
 		} else {
 			return null;
 		}
+
+		// }, 500);
+		// debouncedAPICall(word, from, to);
 	}
 
 	let subtitle = { content: { token: '', pronounciation: '' }, start: 0, end: 0 };
@@ -110,4 +175,13 @@
 			{/if}
 		{/each}
 	</div>
+	<button
+		class="btn border-gray-200 bg-gray-200 rounded-lg p-2 m-2"
+		on:click={() => {
+			hideParticles = !hideParticles;
+			localStorage.setItem('hideParticles', JSON.stringify(hideParticles));
+		}}
+	>
+		{hideParticles ? 'Show' : 'Hide'} particles and common characters
+	</button>
 </div>

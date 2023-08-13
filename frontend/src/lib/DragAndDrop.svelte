@@ -39,7 +39,7 @@
 					}
 				})
 				.then((response) => {
-					console.log(response);
+					// console.log(response);
 					subtitles = response.data.processed_content;
 					localStorage.setItem('last_subtitles', JSON.stringify(subtitles));
 					localStorage.setItem('last_subtitle_language', subtitleLanguage);

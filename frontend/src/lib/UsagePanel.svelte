@@ -22,7 +22,7 @@
 	<button
 		on:click={() => {
 			showFrequency = !showFrequency;
-			console.log(showFrequency);
+			// console.log(showFrequency);
 		}}
 		class="btn-primary m-4 p-2 rounded"
 	>
