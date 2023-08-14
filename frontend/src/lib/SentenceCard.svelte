@@ -6,6 +6,7 @@
 	import { secondsToTimestamp } from '../utils/time';
 	import { localCache } from '$src/stores/cache';
 	import { getWordTranslation } from '$utils/api';
+	import { textToSpeech } from '$utils/tts';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -26,7 +27,6 @@
 		currentSubtitleIndex -= 1;
 		localStorage.setItem('last_subtitle_index', currentSubtitleIndex);
 	};
-
 	onMount(() => {
 		const last_subtitles = localStorage.getItem('last_subtitles');
 		const last_subtitle_language = localStorage.getItem('last_subtitle_language');
@@ -107,6 +107,21 @@
 			bind:value={currentSubtitleIndex}
 			class="text-gray-500 bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-700 dark:focus:border-gray-700 focus:ring-4 focus:outline-none text-center"
 		/>
+		<span>
+			<button
+				class="bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-700 dark:focus:border-gray-700 focus:ring-4 focus:outline-none text-center"
+				on:click={() => textToSpeech(subtitle.content.reduce((acc, curr) => acc + curr.token, ''))}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 text-gray-500"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+				>
+					<path d="M5 4v12h3v-5h4V9H8V4H5z" />
+				</svg>
+			</button>
+		</span>
 	</div>
 	<span class="text-gray-700">
 		{$localCache.currentToken?.token || ''}:

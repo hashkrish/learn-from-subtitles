@@ -21,15 +21,13 @@
 	}}
 >
 	{#if subtitleLanguage === 'ja'}
-		<span>
-			{#if token.pronounciation !== token.token}
-				<span class="text-xs text-gray-500 select-none">
-					{token.pronounciation}
-				</span>
-			{:else}
-				<span class="text-xs text-gray-500 select-none">&nbsp;</span>
-			{/if}
-		</span>
+		{#if token.pronounciation !== token.token}
+			<span class="text-xs text-gray-500 select-none">
+				{token.pronounciation}
+			</span>
+		{:else}
+			<span class="text-xs text-gray-500 select-none p-2" />
+		{/if}
 	{/if}
 	<span class={japanese}>
 		{convertToFullWidth(token?.token)?.replaceAll('（', '(').replaceAll('）', ')')}
