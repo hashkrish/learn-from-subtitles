@@ -51,10 +51,6 @@
 	</button>
 	<a href="/list" class="btn-primary m-4 p-2 rounded bg-grey-200">List view</a>
 </span>
-<DragAndDrop
-	on:subtitlesUpload={onSubtitlesUpload}
-	on:subtitlesUploadFilename={onSubtitlesUploadFileName}
-/>
 <SubtitleHeader {title} />
 <Container className="grid place-content-stretch">
 	<MainContent className="">
@@ -67,4 +63,8 @@
 			<UsagePanel />
 		</Sidebar>
 	{/if}
+	<DragAndDrop
+		on:subtitlesUpload={onSubtitlesUpload}
+		on:subtitlesUploadFilename={onSubtitlesUploadFileName}
+	/>
 </Container>

@@ -66,7 +66,7 @@
 	class="m-4 p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 min-w-100"
 >
 	<div
-		class="items-center justify-center mb-2 text-3xl text-gray-900 dark:text-white my-2 flex flex-wrap align-middle place-content-around"
+		class="items-center justify-center mb-2 text-3xl text-gray-900 dark:text-white my-2 flex flex-wrap align-middle place-content-around whitespace-nowrap"
 	>
 		<button
 			class="flex-grow place-self-stretch justify-items-stretch text-left"
@@ -109,7 +109,7 @@
 		/>
 		<span>
 			<button
-				class="bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-700 dark:focus:border-gray-700 focus:ring-4 focus:outline-none text-center"
+				class="bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-700 dark:focus:border-gray-700 focus:ring-4 focus:outline-none text-center m-2"
 				on:click={() => textToSpeech(subtitle.content.reduce((acc, curr) => acc + curr.token, ''))}
 			>
 				<svg
