@@ -1,5 +1,9 @@
 <script>
+	import { localCache } from '$src/stores/cache';
 	import { convertToFullWidth } from '$utils/lang_jp';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let token = {};
 	export let subtitleLanguage = 'en';
@@ -7,7 +11,15 @@
 	$: japanese = subtitleLanguage === 'ja' ? 'text-3xl' : '';
 </script>
 
-<span class="grid-columns-1 grid place-content-center">
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<span
+	class="grid-columns-1 grid place-content-center"
+	on:mouseenter={() => {
+		if (token) {
+			$localCache.currentToken = token;
+		}
+	}}
+>
 	{#if subtitleLanguage === 'ja'}
 		<span>
 			{#if token.pronounciation !== token.token}

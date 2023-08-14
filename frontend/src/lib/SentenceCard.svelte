@@ -4,6 +4,8 @@
 	import { cardStore } from '$stores/card';
 	import Token from '$lib/Token.svelte';
 	import { secondsToTimestamp } from '../utils/time';
+	import { localCache } from '$src/stores/cache';
+	import { getWordTranslation } from '$utils/api';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -55,6 +57,7 @@
 	});
 
 	let subtitle = { content: '', start: 0, end: 0 };
+	let translationText = JSON.stringify($subtitleStore[currentSubtitleIndex]?.content[0].token);
 	$: subtitle = $subtitleStore[currentSubtitleIndex] || { content: '', start: 0, end: 0 };
 	$: $cardStore.currentSubtitleIndex = currentSubtitleIndex;
 </script>
@@ -105,4 +108,19 @@
 			class="text-gray-500 bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-700 dark:focus:border-gray-700 focus:ring-4 focus:outline-none text-center"
 		/>
 	</div>
+	<span class="text-gray-700">
+		{$localCache.currentToken?.token || ''}:
+		{#await getWordTranslation($localCache?.currentToken?.token)}
+			Loading...
+		{:then translation}
+			{#if translation[0]?.pronounciation}
+				{'(' + translation[0].pronounciation + ')'}
+			{/if}
+			<!-- {translation.reduce((acc, curr) => acc + ', ' + curr.meaning.replaceAll(':', ', '), '')} -->
+			{translation[0]?.meaning?.replaceAll(':', ', ')}
+		{:catch error}
+			Something went wrong
+			{console.log(error)}
+		{/await}
+	</span>
 </div>

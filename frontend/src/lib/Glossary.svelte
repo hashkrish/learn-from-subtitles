@@ -8,6 +8,7 @@
 	import axios from 'axios';
 	import { getIgnoreTokens } from '$utils/frequency';
 	import { debounce } from 'lodash';
+	import { getWordTranslation } from '$utils/api';
 
 	// export let subtitles = [];
 	export let subtitleLanguage = 'en';
@@ -114,29 +115,6 @@
 		});
 	});
 
-	async function getWordTranslation(word, from, to) {
-		from = from || 'ja';
-		to = to || 'en';
-
-		// if (debouncedAPICall) {
-		// 	debouncedAPICall.cancel();
-		// }
-		//
-		// debouncedAPICall = debounce(async (word: string, from: string, to: string) => {
-
-		const url = `${APIURL}/translate/${from}/${to}?word=${word}`;
-		const response = await axios.get(url);
-		if (response.status === 200) {
-			$localCache[word] = response.data[0]?.meaning.replaceAll(':', ', ') || 'Not found';
-			return response.data;
-		} else {
-			return null;
-		}
-
-		// }, 500);
-		// debouncedAPICall(word, from, to);
-	}
-
 	let subtitle = { content: { token: '', pronounciation: '' }, start: 0, end: 0 };
 	let meaning = {};
 
@@ -153,24 +131,36 @@
 				<div
 					class="grid grid-cols-2 place-items-center items-center rounded-lg border border-gray-200"
 				>
-					<Token {token} {subtitleLanguage} />
-					<span class="place-self-start align-text-bottom">
-						{#if token.token in $localCache}
+					{#if token.token in $localCache}
+						<Token {token} {subtitleLanguage} />
+						<span class="place-self-start align-text-bottom">
 							{$localCache[token.token]}
-						{:else}
+						</span>
+					{:else}
+						<Token {token} {subtitleLanguage} />
+						<span class="place-self-start align-text-bottom">
 							{#await getWordTranslation(token.token)}
 								Loading...
 							{:then response}
 								{#if response.length > 0}
-									{response[0].meaning.replaceAll(':', ', ')}
+									<!-- {response[0].meaning.replaceAll(':', ', ')} -->
+
+									{(response.reduce((acc, curr) => {
+										if (curr?.meaning) {
+											return acc + '\n' + curr.meaning.replaceAll(':', ', ').trim();
+										} else {
+											return acc;
+										}
+									}),
+									'')}
 								{:else}
 									Not found
 								{/if}
 							{:catch error}
 								{error}
 							{/await}
-						{/if}
-					</span>
+						</span>
+					{/if}
 				</div>
 			{/if}
 		{/each}
