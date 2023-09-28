@@ -26,9 +26,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://learn-from-subtitles.netlify.app",
-        "http://127.0.0.1:5173",
         "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://learn-from-subtitles.netlify.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -126,6 +126,7 @@ def get_ja_en_word(db, word):
         items = (
             db.query(JapaneseEnglish)
             .filter(JapaneseEnglish.word == word)
+            .order_by(JapaneseEnglish.frequency.desc())
             .limit(10)
             .all()
         )
@@ -255,6 +256,7 @@ def convert_to_full_width(text):
 
 
 @app.get("/api/v1/translate/ja/en")
-async def get_ja_en(request: Request, word: str, db: Session = Depends(get_db)):
+async def get_ja_en(request: Request, response: Response, word: str, db: Session = Depends(get_db)):
     full_width_word = convert_to_full_width(word)
+    response.headers["Cache-Control"] = "public, max-age=31536000"
     return get_ja_en_word(db, full_width_word)

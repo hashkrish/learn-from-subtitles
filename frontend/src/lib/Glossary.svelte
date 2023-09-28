@@ -4,8 +4,6 @@
 	import { cardStore } from '$stores/card';
 	import { localCache, clearLocalCache } from '$stores/cache';
 	import Token from '$lib/Token.svelte';
-	import { APIURL } from '$config';
-	import axios from 'axios';
 	import { getIgnoreTokens } from '$utils/frequency';
 	import { debounce } from 'lodash';
 	import { getWordTranslation } from '$utils/api';
@@ -115,8 +113,7 @@
 		});
 	});
 
-	let subtitle = { content: { token: '', pronounciation: '' }, start: 0, end: 0 };
-	let meaning = {};
+	let subtitle = { content: [{ token: '', pronounciation: '' }], start: 0, end: 0 };
 
 	$: subtitle = $subtitleStore[currentSubtitleIndex] || { content: '', start: 0, end: 0 };
 	$: currentSubtitleIndex = $cardStore.currentSubtitleIndex;
