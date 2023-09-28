@@ -17,7 +17,7 @@ from starlette.templating import Jinja2Templates
 from api.security import create_access_token, jwt_token_required
 from logger import logger
 from tokenizer.tokenizer import get_japanese_pronounciation, tokenize_japanese_text
-from db.sqlalchemy import JapaneseEnglish, create_tables, get_db
+from db.sqlalchemy import JapaneseEnglish, Translation, create_tables, get_db
 
 load_dotenv(".env")
 
@@ -73,7 +73,9 @@ def make_pronounciation_response(token):
 
 
 @app.post("/api/v1/subtitle/process/file")
-async def process_file(request: Request, file: UploadFile = File(...)):
+async def process_file(
+    request: Request, file: UploadFile = File(...), db: Session = Depends(get_db)
+):
     #
     # TODO: Implement server side events
     #
@@ -89,6 +91,12 @@ async def process_file(request: Request, file: UploadFile = File(...)):
                     "start": subtitle.start.total_seconds(),
                     "end": subtitle.end.total_seconds(),
                     "content": list(map(make_pronounciation_response, tokens)),
+                    "translation": "\n".join(
+                        [
+                            get_translation_from_db(db, "ja", "en", content.strip())
+                            for content in subtitle.content.split("\n")
+                        ]
+                    ),
                 }
             )
     except ValueError:
@@ -136,6 +144,27 @@ def get_ja_en_word(db, word):
             "message": str(e),
         }
     return items
+
+
+@lru_cache(maxsize=10000)
+def get_translation_from_db(db, from_lang, to_lang, from_text):
+    try:
+        item = (
+            db.query(Translation)
+            .filter(
+                Translation.from_language == from_lang,
+                Translation.to_language == to_lang,
+                Translation.from_text == from_text,
+            )
+            .first()
+        )
+        if item is None:
+            return ""
+        else:
+            return item.to_text
+
+    except OperationalError as e:
+        return ""
 
 
 half_to_full_width = {
@@ -256,7 +285,37 @@ def convert_to_full_width(text):
 
 
 @app.get("/api/v1/translate/ja/en")
-async def get_ja_en(request: Request, response: Response, word: str, db: Session = Depends(get_db)):
+async def get_ja_en(
+    request: Request, response: Response, word: str, db: Session = Depends(get_db)
+):
     full_width_word = convert_to_full_width(word)
     response.headers["Cache-Control"] = "public, max-age=31536000"
     return get_ja_en_word(db, full_width_word)
+
+
+@app.post("/api/v1/translations/add")
+async def add_translation(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    from_lang = data["from"]
+    to_lang = data["to"]
+    rows = data["rows"]  # list of {ja: str, en: str}
+    try:
+        db.bulk_insert_mappings(
+            Translation,
+            [
+                {
+                    "from_language": from_lang,
+                    "to_language": to_lang,
+                    "from_text": row[from_lang],
+                    "to_text": row[to_lang],
+                }
+                for row in rows
+            ],
+        )
+        db.commit()
+    except OperationalError as e:
+        return {
+            "error": "Database error",
+            "message": str(e),
+        }
+    return {"message": "OK"}

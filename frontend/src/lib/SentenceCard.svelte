@@ -56,9 +56,9 @@
 		});
 	});
 
-	let subtitle = { content: '', start: 0, end: 0 };
+	let subtitle = { content: '', start: 0, end: 0, translation: '' };
 	let translationText = JSON.stringify($subtitleStore[currentSubtitleIndex]?.content[0].token);
-	$: subtitle = $subtitleStore[currentSubtitleIndex] || { content: '', start: 0, end: 0 };
+	$: subtitle = $subtitleStore[currentSubtitleIndex] || { content: '', start: 0, end: 0, translation: '' };
 	$: $cardStore.currentSubtitleIndex = currentSubtitleIndex;
 </script>
 
@@ -89,6 +89,11 @@
 	<!-- <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400"> -->
 	<!-- 	{JSON.stringify($subtitleStore[currentSubtitleIndex])} -->
 	<!-- </p> -->
+  {#if subtitle.translation}
+    <div class="text-gray-700">
+      {subtitle.translation}
+    </div>
+  {/if}
 	<div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 my-4">
 		<span class="text-gray-500 whitespace-nowrap">
 			{secondsToTimestamp(subtitle.start || 0)} - {secondsToTimestamp(subtitle.end || 0)}
@@ -123,19 +128,19 @@
 			</button>
 		</span>
 	</div>
-	<span class="text-gray-700">
+	<div class="text-gray-700">
 		{$localCache.currentToken?.token || ''}:
 		{#await getWordTranslation($localCache?.currentToken?.token)}
 			Loading...
-		{:then translation}
-			{#if translation[0]?.pronounciation}
-				{'(' + translation[0].pronounciation + ')'}
+		{:then word_translation}
+			{#if word_translation[0]?.pronounciation}
+				{'(' + word_translation[0].pronounciation + ')'}
 			{/if}
 			<!-- {translation.reduce((acc, curr) => acc + ', ' + curr.meaning.replaceAll(':', ', '), '')} -->
-			{translation[0]?.meaning?.replaceAll(':', ', ')}
+			{word_translation[0]?.meaning?.replaceAll(':', ', ')}
 		{:catch error}
 			Something went wrong
 			{console.log(error)}
 		{/await}
-	</span>
+	</div>
 </div>
