@@ -46,8 +46,8 @@ class JapaneseEnglish(Base):
     __tablename__ = "japanese_english"
 
     id = Column(String, primary_key=True)
-    word = Column(String, default="")
-    pronounciation = Column(String, default="")
+    word = Column(String, default="", index=True)
+    pronounciation = Column(String, default="", index=True)
     meaning = Column(String, default="")
     tags1 = Column(String, default="")
     tags2 = Column(String, default="")
@@ -56,6 +56,15 @@ class JapaneseEnglish(Base):
     c7 = Column(Float, default=0)
     created = Column(String, default="")
     updated = Column(String, default="")
+
+class Translation(Base):
+    __tablename__ = "translation"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    from_language = Column(String, default="", index=True)
+    to_language = Column(String, default="", index=True)
+    from_text = Column(String, default="", index=True)
+    to_text = Column(String, default="", index=True)
 
 
 def create_tables():
