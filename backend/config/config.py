@@ -17,7 +17,7 @@ else:
 def get_env_variable(var_name):
     """Get the environment variable or return exception."""
     try:
-        logger.info(f"{var_name} loaded from environment")
+        logger.info(f"{var_name} loading from environment")
         return os.environ[var_name]
     except KeyError:
         error_msg = f"Set the {var_name} environment variable"

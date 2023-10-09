@@ -42,8 +42,8 @@ class Word(Base):
 class UserWord(Base):
     __tablename__ = "user_word"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    word_id = Column(Integer, ForeignKey("word.id"))
+    user_id = Column(Integer, nullable=False)
+    word_id = Column(Integer, nullable=False)
     interaction_count = Column(Integer, default=0)
     last_interaction = Column(DateTime, nullable=True)
     current_level = Column(Integer, default=0)

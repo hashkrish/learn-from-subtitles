@@ -8,10 +8,10 @@ from .base import Base
 class LanguageDictionary(Base):
     __abstract__ = True
 
-    id = Column(String, primary_key=True)
-    word = Column(String, default="", index=True)
-    pronounciation = Column(String, default="", index=True)
-    meaning = Column(String, default="")
+    id = Column(String(255), primary_key=True)
+    word = Column(String(255), default="", index=True)
+    pronounciation = Column(String(255), default="", index=True)
+    meaning = Column(String(255), default="")
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=datetime.utcnow)
 
@@ -19,8 +19,8 @@ class LanguageDictionary(Base):
 class JapaneseEnglish(LanguageDictionary):
     __tablename__ = "japanese_english"
 
-    tags1 = Column(String, default="")
-    tags2 = Column(String, default="")
-    tags3 = Column(String, default="")
+    tags1 = Column(String(255), default="")
+    tags2 = Column(String(255), default="")
+    tags3 = Column(String(255), default="")
     frequency = Column(Float, default=0)
     c7 = Column(Float, default=0)

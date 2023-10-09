@@ -4,18 +4,14 @@ from sqlalchemy.orm import Session, sessionmaker
 from config import Config
 from model import Base
 
-engine = create_engine(
-    Config.SQLALCHEMY_DATABASE_URI
-    if Config.ENVIRONMENT.upper() == "PRODUCTION"
-    else "sqlite:///data.db"
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_db() -> Session:
-    assert SessionLocal is not None
+    assert Session is not None
 
-    db = SessionLocal()
+    db = Session()
     try:
         yield db
     finally:
@@ -23,4 +19,7 @@ def get_db() -> Session:
 
 
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
+
+
+breakpoint()
