@@ -1,23 +1,23 @@
-from sqlite3 import OperationalError
-import time
-from functools import lru_cache
-import unicodedata
 import sys
-
-from sqlalchemy.orm import Session
+import time
+import unicodedata
+from functools import lru_cache
 from parser.subtitle import parse_subtitle_text
+from sqlite3 import OperationalError
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, Request, Response, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from api.security import create_access_token, jwt_token_required
+from db import get_db
 from logger import logger
+from model import JapaneseEnglish, Translation
 from tokenizer.tokenizer import get_japanese_pronounciation, tokenize_japanese_text
-from db.sqlalchemy import JapaneseEnglish, Translation, create_tables, get_db
 
 load_dotenv(".env")
 

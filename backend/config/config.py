@@ -28,6 +28,7 @@ def get_env_variable(var_name):
 class Config:
     """Set Flask configuration vars from .env file."""
 
+    ENVIRONMENT = get_env_variable("ENVIRONMENT")
     JWT_SECRET = get_env_variable("JWT_SECRET")
     JWT_ALGORITHM = get_env_variable("JWT_ALGORITHM")
     JWT_EXPIRE_MINUTES = float(get_env_variable("JWT_EXPIRE_MINUTES"))
